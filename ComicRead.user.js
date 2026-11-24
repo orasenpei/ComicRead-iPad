@@ -3,9 +3,9 @@
 // @name:en         ComicRead
 // @name:ru         ComicRead
 // @namespace       ComicRead
-// @version         12.15.0
-// @description     为漫画站增加双页阅读、翻译等优化体验的增强功能。百合会（记录阅读历史、自动签到等）、百合会新站、E-Hentai（关联外站、快捷收藏、标签染色、识别广告页等）、nhentai（彻底屏蔽漫画、无限滚动）、Yurifans（自动签到）、拷贝漫画(copymanga)（显示最后阅读记录、解锁隐藏漫画）、再漫画、漫画柜(manhuagui)、动漫屋(dm5)、mangabz、komiic、無限動漫、绅士漫画(wnacg)、禁漫天堂、NoyAcg、熱辣漫畫、hanime1、E-Hentai 镜像站、hitomi、hdoujin、SchaleNetwork、nude-moon、HentaiZap、IMHentai、HentaiEra、HentaiEnvy、EAHentai、HentaiNexus、AsmHentai、3Hentai、MangaDex、welovemanga、kisslove(klz9)、Pawchive、kemono、nekohouse、Pixiv、微博、明日方舟泰拉记事社、Postimages、ニコニコ漫画、最前線、芸能ヌード、Suwayomi、LANraragi
-// @description:en  Add dual-page reading, translation and other enhancements to comic sites. E-Hentai (Associate nhentai, Quick favorite, Colorize tags, Floating tag list, etc.) | nhentai (Totally block comics, Auto page turning) | E-Hentai 镜像站 | hitomi | hdoujin | SchaleNetwork | nude-moon | HentaiZap | IMHentai | HentaiEra | HentaiEnvy | EAHentai | HentaiNexus | AsmHentai | 3Hentai | Pawchive | kemono | nekohouse | MangaDex | welovemanga | kisslove(klz9)
+// @version         12.15.0.7
+// @description     [iPad 版本] 为漫画站增加双页阅读、翻译等优化体验的增强功能。百合会（记录阅读历史、自动签到等）、百合会新站、E-Hentai（关联外站、快捷收藏、标签染色、识别广告页等）、nhentai（彻底屏蔽漫画、无限滚动）、Yurifans（自动签到）、拷贝漫画(copymanga)（显示最后阅读记录、解锁隐藏漫画）、再漫画、漫画柜(manhuagui)、动漫屋(dm5)、mangabz、komiic、無限動漫、绅士漫画(wnacg)、禁漫天堂、NoyAcg、熱辣漫畫、hanime1、E-Hentai 镜像站、hitomi、hdoujin、SchaleNetwork、nude-moon、HentaiZap、IMHentai、HentaiEra、HentaiEnvy、EAHentai、HentaiNexus、AsmHentai、3Hentai、MangaDex、welovemanga、kisslove(klz9)、Pawchive、kemono、nekohouse、Pixiv、微博、明日方舟泰拉记事社、Postimages、ニコニコ漫画、最前線、芸能ヌード、Suwayomi、LANraragi
+// @description:en  [iPad edition] Add dual-page reading, translation and other enhancements to comic sites. E-Hentai (Associate nhentai, Quick favorite, Colorize tags, Floating tag list, etc.) | nhentai (Totally block comics, Auto page turning) | E-Hentai 镜像站 | hitomi | hdoujin | SchaleNetwork | nude-moon | HentaiZap | IMHentai | HentaiEra | HentaiEnvy | EAHentai | HentaiNexus | AsmHentai | 3Hentai | Pawchive | kemono | nekohouse | MangaDex | welovemanga | kisslove(klz9)
 // @description:ru  Добавляет расширенные функции для удобства на сайт, такие как двухстраничный режим и перевод.
 // @author          hymbz
 // @license         AGPL-3.0-or-later
@@ -64,13 +64,19 @@
 // @resource        solid-js|web https://registry.npmmirror.com/solid-js/1.9.8/files/web/dist/web.cjs
 // @resource        _tensorflow|tfjs https://registry.npmmirror.com/@tensorflow/tfjs/4.22.0/files/dist/tf.min.js
 // @resource        _tensorflow|tfjs-backend-webgpu https://registry.npmmirror.com/@tensorflow/tfjs-backend-webgpu/4.22.0/files/dist/tf-backend-webgpu.js
-// @supportURL      https://github.com/hymbz/ComicReadScript/issues
-// @updateURL       https://github.com/hymbz/ComicReadScript/raw/master/ComicRead.user.js
-// @downloadURL     https://github.com/hymbz/ComicReadScript/raw/master/ComicRead.user.js
+// @supportURL      https://github.com/orasenpei/ComicRead-iPad
+// @updateURL       https://raw.githubusercontent.com/orasenpei/ComicRead-iPad/master/ComicRead.user.js
+// @downloadURL     https://raw.githubusercontent.com/orasenpei/ComicRead-iPad/master/ComicRead.user.js
+// iPad 连续滚动沉浸版 12.15.0.7：单个速度输入框，单位 px/10ms，支持小数。
+// 例如 0.25、0.5、0.625、1；数值越大滚动越快。点击播放进入纵向连续滚动。
+// 旧版 ms/px 设置自动换算显示，保持原来速度。已包含快速收藏修复。
+// 沉浸模式：播放时隐藏工具栏；轻点屏幕显示/隐藏控件，不暂停。
+// 暂停方法：轻点屏幕，点击方形停止按钮。主动拖动/缩放仍会暂停。
 // ==/UserScript==
 //#region \0virtual:lib-code
 const libCodeMap = {
-	"helper/languages": `\n//#region src/helper/languages.ts
+	"helper/languages": `
+//#region src/helper/languages.ts
 const langList = [
 	"zh",
 	"en",
@@ -100,7 +106,8 @@ exports.isLanguages = isLanguages;
 exports.langList = langList;
 exports.setSaveLang = setSaveLang;
 `,
-	"helper": `\nlet helper_languages = require("helper/languages");
+	"helper": `
+let helper_languages = require("helper/languages");
 let solid_js = require("solid-js");
 let solid_js_store = require("solid-js/store");
 let solid_js_web = require("solid-js/web");
@@ -2978,7 +2985,8 @@ exports.waitImgLoad = waitImgLoad;
 exports.waitUrlChange = waitUrlChange;
 exports.withEventStop = withEventStop;
 `,
-	"request": `\nlet components_Toast = require("components/Toast");
+	"request": `
+let components_Toast = require("components/Toast");
 let helper = require("helper");
 //#region src/request.ts
 const xmlHttpRequest = (details) => new Promise((resolve, reject) => {
@@ -3130,7 +3138,8 @@ exports.downloadImgHeaders = downloadImgHeaders;
 exports.eachApi = eachApi;
 exports.request = request;
 `,
-	"components/Manga": `\n//#region \\0rolldown/runtime.js
+	"components/Manga": `
+//#region \\0rolldown/runtime.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -3353,8 +3362,8 @@ const _defaultOption = {
 	},
 	autoScroll: {
 		enabled: false,
-		interval: 3e3,
-		distance: 200,
+		interval: 16,
+		distance: 1,
 		continuous: true,
 		triggerEnd: false
 	}
@@ -3629,7 +3638,7 @@ const resetUI = (state) => {
 	state.show.pageTip = false;
 };
 const focus = () => requestAnimationFrame(() => {
-	refs.mangaBox?.click();
+	if (!store.autoScroll.play) refs.mangaBox?.click();
 	refs.mangaBox?.focus();
 });
 /** 将函数的 state 参数变为可选 */
@@ -5743,9 +5752,26 @@ const switchFullscreen = () => {
 	return refs.root.requestFullscreen();
 };
 /** 切换自动滚动 */
-const switchAutoScroll = () => setState("autoScroll", "play", (val) => !val);
+const switchAutoScroll = () => {
+	if (store.autoScroll.play) return stopAutoScroll();
+	// This edition's Play button always means continuous downward reading.
+	setOption((option) => {
+		option.scrollMode.enabled = true;
+		option.scrollMode.abreastMode = false;
+		option.autoScroll.continuous = true;
+	});
+	if (clickTimeout) {
+		clearTimeout(clickTimeout);
+		clickTimeout = null;
+	}
+	setState((state) => {
+		resetUI(state);
+		state.autoScroll.play = true;
+	});
+};
 /** 停止自动滚动 */
 const stopAutoScroll = () => {
+	autoScroll.cancel();
 	if (!store.autoScroll.play) return;
 	setState("autoScroll", "play", false);
 	constantScroll.cancel();
@@ -6391,7 +6417,20 @@ const handlePageClick = (e) => {
 };
 /** 双击放大 */
 const doubleClickZoom = (e) => zoom(store.option.zoom.ratio === 100 ? 350 : 100, e, true);
-const handleClick = useDoubleClick(handlePageClick, doubleClickZoom);
+const normalReaderClick = useDoubleClick(handlePageClick, doubleClickZoom);
+const handleClick = (e) => {
+	if (!store.autoScroll.play) return normalReaderClick(e);
+	// A tap reveals/hides controls without turning a page or stopping playback.
+	if (clickTimeout) {
+		clearTimeout(clickTimeout);
+		clickTimeout = null;
+	}
+	setState((state) => {
+		const show = !state.show.toolbar;
+		resetUI(state);
+		state.show.toolbar = show;
+	});
+};
 /** 拖动页面的动画控制器 */
 const dragAnim = new class extends helper.AnimationFrame {
 	dx = 0;
@@ -7004,12 +7043,23 @@ const ComicImg = (img) => {
 var _tmpl$$36 = /*#__PURE__*/ solid_js_web.template(\`<div tabindex=-1><div tabindex=-1>\`);
 const ComicImgFlow = () => {
 	const hiddenMouse = useHiddenMouse(() => refs.mangaFlow);
-	const handleDrag = (state, e) => {
-		stopAutoScroll();
+	const dispatchReaderDrag = (state, e) => {
 		if (touches.size > 1) return handlePinchZoom(state, e);
 		if (store.option.zoom.ratio !== 100) return handleZoomDrag(state, e);
 		if (store.option.scrollMode.enabled) return handleScrollModeDrag(state, e);
 		return handleMangaFlowDrag(state, e);
+	};
+	const handleDrag = (state, e) => {
+		if (store.autoScroll.play) {
+			const moved = Math.hypot(state.xy[0] - state.initial[0], state.xy[1] - state.initial[1]) > 8;
+			// Pointer down/up alone, including small finger jitter, is a tap, not a pause.
+			if (touches.size <= 1 && !moved) return;
+			stopAutoScroll();
+			// Drag/zoom controllers skipped pointerdown while autoplay owned the viewport.
+			dispatchReaderDrag({ ...state, type: "down", xy: state.initial, last: state.initial }, e);
+			if (state.type === "down") return;
+		}
+		return dispatchReaderDrag(state, e);
 	};
 	solid_js.onMount(() => {
 		helper.useDrag({
@@ -7100,7 +7150,7 @@ const ComicImgFlow = () => {
 	});
 	return (() => {
 		var _el$ = _tmpl$$36(), _el$2 = _el$.firstChild;
-		solid_js_web.addEventListener(_el$, "scrollend", focus);
+		solid_js_web.addEventListener(_el$, "scrollend", () => { if (!store.autoScroll.play) focus(); });
 		_el$.addEventListener("transitionend", handleTransitionEnd);
 		var _ref$ = bindRef("mangaBox");
 		typeof _ref$ === "function" && solid_js_web.use(_ref$, _el$);
@@ -7802,13 +7852,47 @@ var stop_default = (props = {}) => (() => {
 //#endregion
 //#region src/components/Manga/components/autoScroll.tsx
 /** 自动滚动最低速度（px/ms），避免 distance 为 0 或异常配置导致卡住 */
-const MIN_AUTO_SCROLL_SPEED = 10 / 1e3;
 const autoScrollSpeed = () => {
-	const { interval, distance } = store.option.autoScroll;
-	if (interval <= 0 || distance <= 0) return MIN_AUTO_SCROLL_SPEED;
-	return Math.max(MIN_AUTO_SCROLL_SPEED, distance / interval);
+	const ms = Number(store.option.autoScroll.interval);
+	const px = Number(store.option.autoScroll.distance);
+	return (Number.isFinite(px) && px > 0 ? px : 1) / (Number.isFinite(ms) && ms > 0 ? ms : 16);
 };
 const autoScroll = new class extends helper.AnimationFrame {
+	position = 0;
+	lastExpectedTop = 0;
+	lastFrameTime = null;
+	lastProgressTime = 0;
+	progressElapsed = 0;
+	continuousFrame = (timestamp) => {
+		if (!this.animationId || !store.autoScroll.play || !store.option.autoScroll.enabled) return this.cancel();
+		if (document.hidden || contentHeight() <= 0 || store.rootSize.height <= 0) {
+			this.lastFrameTime = null;
+			this.call(true);
+			return;
+		}
+		// Follow external layout compensation, while retaining subpixel accumulation.
+		const reported = scrollTop();
+		if (Math.abs(reported - this.lastExpectedTop) > 1) this.position = reported;
+		const max = Math.max(0, contentHeight() - store.rootSize.height);
+		const elapsed = this.lastFrameTime === null ? 0 : timestamp - this.lastFrameTime;
+		this.lastFrameTime = timestamp;
+		const dt = elapsed > 100 || elapsed < 0 ? 0 : Math.min(50, elapsed);
+		this.position = Math.max(0, Math.min(max, this.position + autoScrollSpeed() * dt));
+		this.lastExpectedTop = this.position;
+		// Use ComicRead's original position/rendering pipeline for iPad compatibility.
+		scrollTo(this.position);
+		if (!this.animationId || !store.autoScroll.play) return;
+		this.progressElapsed = (this.progressElapsed + dt) % 1000;
+		if (timestamp - this.lastProgressTime >= 100) {
+			this.lastProgressTime = timestamp;
+			setState("autoScroll", "progress", this.progressElapsed / 1000);
+		}
+		if (!this.animationId || !store.autoScroll.play) return;
+		const latestMax = Math.max(0, contentHeight() - store.rootSize.height);
+		if (this.position >= latestMax && scrollTop() >= latestMax - 1) return this.scrollEnd();
+		this.call(true);
+	};
+
 	/** 上次滚动的时间 */
 	lastTime = 0;
 	scrollEnd = () => {
@@ -7823,6 +7907,7 @@ const autoScroll = new class extends helper.AnimationFrame {
 		return turnPageAnimation("next");
 	};
 	frame = (timestamp) => {
+		if (isScrollMode()) return this.continuousFrame(timestamp);
 		const elapsed = timestamp - this.lastTime;
 		let progress;
 		if (elapsed >= store.option.autoScroll.interval) {
@@ -7837,6 +7922,16 @@ const autoScroll = new class extends helper.AnimationFrame {
 	};
 	start = () => {
 		this.lastTime = 0;
+		if (isScrollMode()) {
+			scrollStep.cancel();
+			slideAnim.cancel();
+			this.position = scrollTop();
+			this.lastExpectedTop = this.position;
+			this.lastFrameTime = null;
+			this.lastProgressTime = 0;
+			this.progressElapsed = 0;
+			return this.call();
+		}
 		if (!store.option.autoScroll.continuous || !store.option.scrollMode.enabled) return this.call();
 		constantScroll.start(autoScrollSpeed(), (delta) => {
 			if (isBottom()) {
@@ -7864,7 +7959,7 @@ helper.createEffectOn(() => [
 	if (!store.option.autoScroll.enabled || !store.autoScroll.play) return;
 	autoScroll.start();
 });
-helper.createEffectOn(() => store.show.toolbar, (show) => show && autoScroll.stop());
+// Opening the controls must not interrupt continuous playback.
 const AutoScrollButton = () => {
 	const background = solid_js.createMemo(() => {
 		if (!store.autoScroll.play) return;
@@ -8797,41 +8892,21 @@ const defaultSettingList = () => [
 			return helper.t("other.enabled");
 		} }, () => bindOption("autoScroll", "enabled"))),
 		solid_js_web.createComponent(SettingsItemNumber, {
-			get name() {
-				return helper.t("other.interval");
-			},
-			maxLength: 3,
-			suffix: "s",
-			step: 1,
+			name: "滚动速度",
+			maxLength: 12,
+			suffix: "px/10ms",
+			step: 0.05,
 			onChange: (val) => {
-				if (!Number.isNaN(val)) setState("option", "autoScroll", "interval", Math.max(1, val) * 1e3);
+				if (!Number.isFinite(val) || val <= 0) return;
+				// Blurring an unchanged, rounded display must not alter a saved speed.
+				if (val === Number((autoScrollSpeed() * 10).toPrecision(8))) return;
+				setOption((option) => {
+					option.autoScroll.interval = 10;
+					option.autoScroll.distance = val;
+				});
 			},
 			get value() {
-				return store.option.autoScroll.interval / 1e3;
-			}
-		}),
-		solid_js_web.createComponent(SettingsItemNumber, {
-			get name() {
-				return helper.t("other.distance");
-			},
-			maxLength: 3,
-			suffix: "px",
-			step: 20,
-			onChange: (val) => {
-				if (!Number.isNaN(val)) setState("option", "autoScroll", "distance", Math.max(1, val));
-			},
-			get value() {
-				return store.option.autoScroll.distance;
-			}
-		}),
-		solid_js_web.createComponent(SettingsShowItem, {
-			get when() {
-				return isScrollMode();
-			},
-			get children() {
-				return solid_js_web.createComponent(SettingsItemSwitch, solid_js_web.mergeProps({ get name() {
-					return helper.t("setting.option.auto_scroll_continuous");
-				} }, () => bindOption("autoScroll", "continuous")));
+				return Number((autoScrollSpeed() * 10).toPrecision(8));
 			}
 		}),
 		solid_js_web.createComponent(SettingsItemSwitch, solid_js_web.mergeProps({ get name() {
@@ -9313,6 +9388,7 @@ const Toolbar = () => {
 	helper.createEffectOn(() => store.show.toolbar, (show) => show || focus());
 	return (() => {
 		var _el$ = _tmpl$$2(), _el$2 = _el$.firstChild, _el$3 = _el$2.firstChild;
+		solid_js_web.effect(() => solid_js_web.setStyleProperty(_el$, "display", store.autoScroll.play && !store.show.toolbar ? "none" : void 0));
 		solid_js_web.addEventListener(_el$2, "click", focus);
 		solid_js_web.insert(_el$2, solid_js_web.createComponent(solid_js.For, {
 			get each() {
@@ -9802,7 +9878,8 @@ exports.wheelRatchet = wheelRatchet;
 exports.withOptionalState = withOptionalState;
 exports.zoom = zoom;
 `,
-	"components/IconButton": `\nlet solid_js_web = require("solid-js/web");
+	"components/IconButton": `
+let solid_js_web = require("solid-js/web");
 let helper = require("helper");
 let solid_js = require("solid-js");
 //#region src/components/IconButton/index.module.css
@@ -9881,7 +9958,8 @@ const IconButton = (_props) => {
 //#endregion
 exports.IconButton = IconButton;
 `,
-	"components/Fab": `\nlet solid_js_web = require("solid-js/web");
+	"components/Fab": `
+let solid_js_web = require("solid-js/web");
 let helper = require("helper");
 let solid_js = require("solid-js");
 //#region node_modules/.pnpm/@material-design-icons+svg@0.14.15/node_modules/@material-design-icons/svg/round/menu_book.svg
@@ -10026,7 +10104,8 @@ const Fab = (_props) => {
 //#endregion
 exports.Fab = Fab;
 `,
-	"components/Toast": `\nlet helper = require("helper");
+	"components/Toast": `
+let helper = require("helper");
 let solid_js_web = require("solid-js/web");
 let solid_js = require("solid-js");
 //#region src/components/Toast/store.tsx
@@ -10287,7 +10366,8 @@ helper.exposeToGlobal({ toast });
 exports.Toaster = Toaster;
 exports.toast = toast;
 `,
-	"components/InputDialog": `\nlet solid_js_web = require("solid-js/web");
+	"components/InputDialog": `
+let solid_js_web = require("solid-js/web");
 let helper = require("helper");
 let solid_js = require("solid-js");
 //#region src/components/InputDialog/index.module.css
@@ -10414,7 +10494,8 @@ exports.askInput = askInput;
 exports.setState = setState;
 exports.store = store;
 `,
-	"userscript/copyApi": `\nlet request = require("request");
+	"userscript/copyApi": `
+let request = require("request");
 let core = require("core");
 let helper = require("helper");
 //#region src/userscript/copyApi/client.ts
@@ -10702,7 +10783,8 @@ exports.getImglistByHtml = getImglistByHtml;
 exports.getLastChapter = getLastChapter;
 exports.token = token;
 `,
-	"userscript/detectAd": `\n//#region \\0rolldown/runtime.js
+	"userscript/detectAd": `
+//#region \\0rolldown/runtime.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -10791,7 +10873,8 @@ exports.getAdPageByContent = getAdPageByContent;
 exports.getAdPageByFileName = getAdPageByFileName;
 exports.isAdImg = isAdImg;
 `,
-	"core": `\nlet helper = require("helper");
+	"core": `
+let helper = require("helper");
 let components_Toast = require("components/Toast");
 let solid_js = require("solid-js");
 let solid_js_web = require("solid-js/web");
@@ -13049,7 +13132,8 @@ exports.useInit = useInit;
 exports.useMultiSelectLoad = useMultiSelectLoad;
 exports.useSpeedDial = useSpeedDial;
 `,
-	"userscript/autoImageScanner": `\nlet helper = require("helper");
+	"userscript/autoImageScanner": `
+let helper = require("helper");
 //#region src/userscript/autoImageScanner/chapterSwitch.ts
 const prevRe = /^上一?(?:[章話话]|章节)$|^(?:prev|previous)(?:\\s+chapter)?$|^前の章$/iu;
 const nextRe = /^下一?(?:[章話话]|章节)$|^next(?:\\s+chapter)?$|^次の章$/iu;
@@ -14376,7 +14460,8 @@ var AutoImageScanner = class {
 //#endregion
 exports.AutoImageScanner = AutoImageScanner;
 `,
-	"userscript/supportWorker": `\n//#region src/userscript/supportWorker.ts
+	"userscript/supportWorker": `
+//#region src/userscript/supportWorker.ts
 let supportWorker;
 console.debug(supportWorker);
 new Promise((resolve) => {
@@ -14407,7 +14492,8 @@ Object.defineProperty(exports, "supportWorker", {
 	}
 });
 `,
-	"worker/detectAd": `\n//#region \\0rolldown/runtime.js
+	"worker/detectAd": `
+//#region \\0rolldown/runtime.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -14523,7 +14609,8 @@ const isAdImg = (imgBitmap) => {
 exports.isAdImg = isAdImg;
 exports.setMainFn = setMainFn;
 `,
-	"worker/ImageRecognition": `\n/**
+	"worker/ImageRecognition": `
+/**
 * 用途：面积小于该比例的 Region 会被删除。
 * 取值范围：0 ~ 1
 */
@@ -15628,7 +15715,8 @@ const recognitionImg = async (imgData, data) => {
 exports.recognitionImg = recognitionImg;
 exports.setMainFn = setMainFn;
 `,
-	"worker/ImageUpscale": `\n//#region \\0rolldown/runtime.js
+	"worker/ImageUpscale": `
+//#region \\0rolldown/runtime.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -15839,7 +15927,8 @@ const upscaleImage = async (data, width, height, url) => {
 exports.setMainFn = setMainFn;
 exports.upscaleImage = upscaleImage;
 `,
-	"userscript/otherSite": `\nlet solid_js_web = require("solid-js/web");
+	"userscript/otherSite": `
+let solid_js_web = require("solid-js/web");
 let core = require("core");
 let helper = require("helper");
 let userscript_autoImageScanner = require("userscript/autoImageScanner");
@@ -15944,7 +16033,8 @@ const otherSite = async () => {
 //#endregion
 exports.otherSite = otherSite;
 `,
-	"userscript/ehTagRules": `\n//#region src/userscript/ehTagRules/index.ts
+	"userscript/ehTagRules": `
+//#region src/userscript/ehTagRules/index.ts
 const rules = {
 	"prerequisite": {
 		"(x|f):incest": [
@@ -16279,7 +16369,8 @@ exports.isMissingNamespace = isMissingNamespace;
 exports.isMissingTags = isMissingTags;
 exports.splitTagNamespace = splitTagNamespace;
 `,
-	"site/3hentai": `\nlet core = require("core");
+	"site/3hentai": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/3hentai.tsx
 (() => {
@@ -16297,7 +16388,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/asmhentai": `\nlet core = require("core");
+	"site/asmhentai": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/asmhentai.tsx
 (() => {
@@ -16319,7 +16411,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/copymanga": `\nlet core = require("core");
+	"site/copymanga": `
+let core = require("core");
 let helper = require("helper");
 let userscript_copyApi = require("userscript/copyApi");
 let solid_js_web = require("solid-js/web");
@@ -16680,7 +16773,8 @@ core.setupSiteAdapter({
 });
 //#endregion
 `,
-	"site/dm5": `\nlet core = require("core");
+	"site/dm5": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/dm5.tsx
 (() => {
@@ -16729,7 +16823,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/ehentai": `\nlet solid_js_web = require("solid-js/web");
+	"site/ehentai": `
+let solid_js_web = require("solid-js/web");
 let components_Manga = require("components/Manga");
 let core = require("core");
 let helper = require("helper");
@@ -18005,7 +18100,7 @@ const addQuickFavorite = ({ button: favoriteButton, root, apiUrl, height, top = 
 			const handleClick = async () => {
 				if (checked) return;
 				setShow(false);
-				const formData = new FormData();
+				const formData = new URLSearchParams();
 				formData.append("favcat", index() === 10 ? "favdel" : \`\${index()}\`);
 				formData.append("apply", "Apply Changes");
 				formData.append("favnote", favnote());
@@ -18013,7 +18108,8 @@ const addQuickFavorite = ({ button: favoriteButton, root, apiUrl, height, top = 
 				favoriteButton.classList.add("comidread-blink");
 				const res = await core.request(apiUrl, {
 					method: "POST",
-					data: formData,
+					headers: { "Content-Type": "application/x-www-form-urlencoded" },
+					data: formData.toString(),
 					errorText: helper.t("site.ehentai.change_favorite_failed")
 				}).finally(() => favoriteButton.classList.remove("comidread-blink"));
 				core.toast.success(helper.t("site.ehentai.change_favorite_success"));
@@ -18832,7 +18928,8 @@ core.setupSiteAdapter({
 });
 //#endregion
 `,
-	"site/hdoujin": `\nlet core = require("core");
+	"site/hdoujin": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/hdoujin.tsx
 const clearance = localStorage.getItem("clearance");
@@ -18884,7 +18981,8 @@ core.setup({
 });
 //#endregion
 `,
-	"site/hentaienvy": `\nlet core = require("core");
+	"site/hentaienvy": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/hentaienvy.tsx
 (() => {
@@ -18911,7 +19009,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/hentainexus": `\nlet core = require("core");
+	"site/hentainexus": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/hentainexus.tsx
 (() => {
@@ -18942,7 +19041,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/hitomi": `\nlet core = require("core");
+	"site/hitomi": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/hitomi.tsx
 core.setup({
@@ -18953,7 +19053,8 @@ core.setup({
 });
 //#endregion
 `,
-	"site/jm": `\nlet core = require("core");
+	"site/jm": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/jm.tsx
 core.setupSiteAdapter({
@@ -19040,7 +19141,8 @@ core.setupSiteAdapter({
 });
 //#endregion
 `,
-	"site/kemono": `\nlet core = require("core");
+	"site/kemono": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/kemono.tsx
 const fileNameOf = (a) => {
@@ -19145,7 +19247,8 @@ core.setupSiteAdapter({
 });
 //#endregion
 `,
-	"site/klz9": `\nlet core = require("core");
+	"site/klz9": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/klz9.tsx
 (() => {
@@ -19170,7 +19273,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/komiic": `\nlet core = require("core");
+	"site/komiic": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/komiic.tsx
 const query = helper.gql\`
@@ -19207,7 +19311,8 @@ core.setup({
 });
 //#endregion
 `,
-	"site/lanraragi": `\nlet components_Manga = require("components/Manga");
+	"site/lanraragi": `
+let components_Manga = require("components/Manga");
 let core = require("core");
 let helper = require("helper");
 let request = require("request");
@@ -19273,7 +19378,8 @@ core.setup({
 });
 //#endregion
 `,
-	"site/mangabz": `\nlet core = require("core");
+	"site/mangabz": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/mangabz.tsx
 (() => {
@@ -19316,7 +19422,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/mangadex": `\nlet core = require("core");
+	"site/mangadex": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/mangadex.tsx
 core.setup({
@@ -19332,7 +19439,8 @@ core.setup({
 });
 //#endregion
 `,
-	"site/manhuagui": `\nlet core = require("core");
+	"site/manhuagui": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/manhuagui.tsx
 (() => {
@@ -19374,7 +19482,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/newYamibo": `\nlet core = require("core");
+	"site/newYamibo": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/newYamibo.tsx
 (() => {
@@ -19402,7 +19511,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/nhentai": `\nlet solid_js_web = require("solid-js/web");
+	"site/nhentai": `
+let solid_js_web = require("solid-js/web");
 let core = require("core");
 let helper = require("helper");
 let userscript_detectAd = require("userscript/detectAd");
@@ -19614,7 +19724,8 @@ core.setupSiteAdapter({
 solid_js_web.delegateEvents(["click"]);
 //#endregion
 `,
-	"site/nico": `\nlet core = require("core");
+	"site/nico": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/nico.tsx
 (() => {
@@ -19642,7 +19753,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/noyacg": `\nlet core = require("core");
+	"site/noyacg": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/noyacg.tsx
 if (location.hostname === "noy1.top") core.setup({
@@ -19670,7 +19782,8 @@ else core.setup({
 });
 //#endregion
 `,
-	"site/nude-moon": `\nlet components_Manga = require("components/Manga");
+	"site/nude-moon": `
+let components_Manga = require("components/Manga");
 let core = require("core");
 let helper = require("helper");
 //#region src/site/nude-moon.tsx
@@ -19698,7 +19811,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/pixiv": `\nlet core = require("core");
+	"site/pixiv": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/pixiv.tsx
 let imgs = [];
@@ -19766,7 +19880,8 @@ core.setupSiteAdapter({
 });
 //#endregion
 `,
-	"site/sai-zen-sen": `\nlet core = require("core");
+	"site/sai-zen-sen": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/sai-zen-sen.tsx
 (() => {
@@ -19788,7 +19903,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/schale": `\nlet core = require("core");
+	"site/schale": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/schale.tsx
 const downloadImg = (url) => new Promise((resolve) => {
@@ -19834,7 +19950,8 @@ core.setup({
 });
 //#endregion
 `,
-	"site/suwayomi": `\nlet components_Toast = require("components/Toast");
+	"site/suwayomi": `
+let components_Toast = require("components/Toast");
 let core = require("core");
 let helper = require("helper");
 let request = require("request");
@@ -19966,7 +20083,8 @@ core.setup({
 });
 //#endregion
 `,
-	"site/terrahistoricus": `\nlet core = require("core");
+	"site/terrahistoricus": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/terrahistoricus.tsx
 const apiUrl = () => {
@@ -19993,7 +20111,8 @@ core.setup({
 });
 //#endregion
 `,
-	"site/weibo": `\nlet core = require("core");
+	"site/weibo": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/weibo.tsx
 let current = 0;
@@ -20032,7 +20151,8 @@ core.setupSiteAdapter({
 });
 //#endregion
 `,
-	"site/wnacg": `\nlet core = require("core");
+	"site/wnacg": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/wnacg.tsx
 (() => {
@@ -20056,7 +20176,8 @@ let helper = require("helper");
 })();
 //#endregion
 `,
-	"site/yamibo": `\nlet core = require("core");
+	"site/yamibo": `
+let core = require("core");
 let helper = require("helper");
 let solid_js_web = require("solid-js/web");
 let solid_js = require("solid-js");
@@ -20383,7 +20504,8 @@ core.setupSiteAdapter({
 });
 //#endregion
 `,
-	"site/yurifans": `\nlet core = require("core");
+	"site/yurifans": `
+let core = require("core");
 let helper = require("helper");
 //#region src/site/yurifans.tsx
 core.setupSiteAdapter({
@@ -20463,7 +20585,8 @@ core.setupSiteAdapter({
 });
 //#endregion
 `,
-	"site/zaimanhua": `\nlet core = require("core");
+	"site/zaimanhua": `
+let core = require("core");
 let helper = require("helper");
 let request = require("request");
 //#region src/userscript/zaimanhuaApi.ts
